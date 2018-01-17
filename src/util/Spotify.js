@@ -25,7 +25,14 @@ const Spotify = {
     accessToken = Spotify.getAccessToken();
 
     return fetch(`https://api.spotify.com/v1/search?type=track&q=${term.replace(' ', '%20')}`, {headers: {'Authorization': `Bearer ${accessToken}`}})
-      .then(response => response.json())
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        }
+        throw new Error('Request Failed');
+      }, networkError => {
+        console.log(networkError.message);
+      })
       .then(jsonResponse => {
         if (!jsonResponse.tracks) {
           return [];
@@ -47,28 +54,34 @@ const Spotify = {
 
     accessToken = Spotify.getAccessToken();
     let headers = {'Authorization': `Bearer ${accessToken}`};
-    let userId
+    let userId;
 
     return fetch('https://api.spotify.com/v1/me', { headers: headers})
-    .then(response => response.json())
-    .then(jsonResponse => {
-      userId = jsonResponse.id;
-      return fetch(`https://api.spotify.com/v1/users/${userId}/playlists`, {
+    .then(response => { if (response.ok) {
+      return response.json();
+    }
+    throw new Error('Request Failed');
+  }, networkError => {
+    console.log(networkError.message);
+  })
+  .then(jsonResponse => {
+    userId = jsonResponse.id;
+    return fetch(`https://api.spotify.com/v1/users/${userId}/playlists`, {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify({
+          name: name
+        })
+      })
+      .then(response => response.json())
+      .then(jsonResponse => {
+        let playlistId = jsonResponse.id;
+        return fetch(`https://api.spotify.com/v1/users/${userId}/playlists/${playlistId}/tracks`, {
           method: 'POST',
           headers: headers,
-          body: JSON.stringify({
-            name: name
-          })
-        })
-        .then(response => response.json())
-        .then(jsonResponse => {
-          const playlistId = jsonResponse.id;
-          return fetch(`https://api.spotify.com/v1/users/${userId}/playlists/${playlistId}/tracks`, {
-            method: 'POST',
-            headers: headers,
-            body: JSON.stringify({uris: trackUris})
-          });
-        })
+          body: JSON.stringify({uris: trackUris})
+        });
+      })
     })
   }
 };

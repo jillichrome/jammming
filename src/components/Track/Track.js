@@ -10,12 +10,12 @@ class Track extends React.Component {
     this.renderAction = this.renderAction.bind(this);
   }
 
-  addTrack() {
+  addTrack(event) {
     this.props.onAdd(this.props.track);
   }
 
-  removeTrack() {
-    this.props.onremove(this.props.track);
+  removeTrack(event) {
+    this.props.onRemove(this.props.track);
   }
 
   renderAction() {
@@ -33,7 +33,7 @@ class Track extends React.Component {
           <h3>{this.props.track.name}</h3>
           <p>{this.props.track.artist} | {this.props.track.album}</p>
         </div>
-        <a className="Track-action">{this.renderAction}</a>
+        {this.renderAction()}
       </div>
     );
   }

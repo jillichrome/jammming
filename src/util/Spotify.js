@@ -50,8 +50,6 @@ const Spotify = {
   },
 
   savePlaylist(name, trackUris) {
-    if (!name || !trackUris) return;
-
     accessToken = Spotify.getAccessToken();
     let headers = {'Authorization': `Bearer ${accessToken}`};
     let userId;

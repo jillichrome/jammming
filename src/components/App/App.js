@@ -53,7 +53,9 @@ class App extends React.Component {
   }
 
   search(term) {
-    return Spotify.search(term).then(tracks => this.setState({searchResults: tracks}));
+    if (term.length > 0) {
+      return Spotify.search(term).then(tracks => this.setState({searchResults: tracks}));
+    } 
   }
 
   render() {

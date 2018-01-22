@@ -5,6 +5,8 @@ import SearchBar from '../SearchBar/SearchBar.js';
 import Playlist from '../PlayList/PlayList.js';
 import Spotify from '../../util/Spotify.js';
 
+Spotify.getAccessToken();
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -46,7 +48,6 @@ class App extends React.Component {
           playlistName: 'New Playlist',
           playlistTracks: []
         });
-        document.getElementById('Playlist-name').value = this.state.playlistName;
       });
     }
   }
